@@ -2,7 +2,6 @@
 
 import pandas as pd, matplotlib.pyplot as plt, seaborn as sns, numpy as np
 from sklearn import preprocessing
-from sklearn.decomposition import PCA
 from library import *
 
 # 1. input:
