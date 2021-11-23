@@ -18,6 +18,7 @@ Extract_str_df = main_df[['Treatment', 'Charge', 'CSA']]
 
 # for x in dict_LOD:
 #     Extract_int_df.loc[Extract_int_df[x] < dict_LOD[x], x] = NaN  # remove of values under LOD
+# 这里的问题和下面讨论的NaN，log问题是一样的
 
 Extract_int_df_div = Extract_int_df.div(main_df['CSA'], axis=0)  # normalisation based on CSA
 
@@ -26,7 +27,7 @@ min_max_scaler = preprocessing.MinMaxScaler()
 x_scaled = min_max_scaler.fit_transform(x)
 Extract_int_df_normalised = pd.DataFrame(x_scaled, columns=Extract_int_df_div.columns)
 
-# Extract_int_df_log = Extract_int_df_div.apply(np.log)  # logarithmising the data for better visualisation
+# Extract_int_df_log = Extract_int_df_div.apply(np.log)  # logarithmising the data for better visualisation 优势
 # Extract_int_df_log.replace([np.inf, -np.inf], np.nan, inplace=True)
 # log_df = Extract_int_df_log.dropna(axis=1)
 # log使用的问题就是之后不能使用heatmap的形式，dropnan过后又会导致我的数据不够全面
