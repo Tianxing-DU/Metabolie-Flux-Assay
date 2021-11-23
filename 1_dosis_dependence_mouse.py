@@ -52,10 +52,10 @@ Simplified_df = pd.concat([Extract_str_df, Extract_int_df_normalised], axis=1)
 df = pd.melt(Simplified_df, id_vars=[xaxislabel], var_name='C-Chains', value_name=yaxislabel)
 
 # 3. visualisation
-# +++ overview for having a feeling (not be used in publication)
 dose_order = ['0', '0.3', '1', '3', '10', '30', '100', '300', '1000']
+sns.set_theme(font_scale=1.6,style='ticks', font='Helvetica')
 
-sns.set_theme(font_scale=1.6, style='ticks', font='Helvetica')
+# +++ overview for having a feeling (not be used in publication)
 dosis_ax = sns.catplot(x=xaxislabel, y=yaxislabel, data=df, kind="bar",
                        row='C-Chains', palette='summer_r', order=dose_order, row_order=list_custom,
                        errwidth=0.3, aspect=1.1, alpha=.8, dodge=True, edgecolor='black',
@@ -63,6 +63,25 @@ dosis_ax = sns.catplot(x=xaxislabel, y=yaxislabel, data=df, kind="bar",
 dosis_ax.set(yscale="log")
 plt.tight_layout()
 # save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211011_3h/0_2_dose_dependence_all_mouse.pdf'
+# plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
+plt.show()
+
+# +++ explore the df in short, medium, long chain range (bar plot)(not be used in publication)
+a = df.replace(to_replace=short_chain, value='short_chain')
+b = a.replace(to_replace=medium_chain, value='medium_chain')
+c = b.replace(to_replace=long_chain, value='long_chain')
+grouped = c[yaxislabel].groupby([c[xaxislabel], c['C-Chains']]).sum()  # sum by using groupby
+grouped_df = pd.DataFrame(grouped)
+grouped_df.reset_index(inplace=True)  # convert the merged index to column
+
+sublist = ['short_chain','medium_chain', 'long_chain']
+dosis_ax = sns.catplot(x=xaxislabel, y=yaxislabel, data=grouped_df, kind="bar",
+                  col='C-Chains', saturation=1, palette='Blues', col_order=sublist, order=dose_order,
+                  aspect=1.2,  legend=False, sharey=False, sharex=False, edgecolor='k'
+                 )
+dosis_ax.set(yscale="log")
+plt.tight_layout()
+# save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211104/dose_dependence_chain_length_mouse.pdf'
 # plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
 plt.show()
 
