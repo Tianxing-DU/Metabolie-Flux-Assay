@@ -49,7 +49,18 @@ Simplified_df = pd.concat([Extract_str_df, Extract_int_df_normalised], axis=1)
 df = pd.melt(Simplified_df, id_vars=[xaxislabel], var_name='C-Chains', value_name=yaxislabel)  # data is finally ready
 
 # 3. visualisation
-# +++ explore the df in short, medium, long chain range (bar plot)
+# +++ overview for having a feeling (not be used in publication)
+dosis_ax = sns.catplot(x=xaxislabel, y=yaxislabel, data=df, kind="bar",
+                       row='C-Chains', palette='summer_r', order=dose_order, row_order=list_custom,
+                       errwidth=0.3, aspect=1.1, alpha=.8, dodge=True, edgecolor='black',
+                       capsize=0.2, legend=True, sharey=False, sharex=False)
+dosis_ax.set(yscale="log")
+plt.tight_layout()
+# save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20210902_6h/dosis_all.pdf'
+# plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
+plt.show()
+
+# +++ explore the df in short, medium, long chain range (bar plot)(not be used in publication)
 a = df.replace(to_replace=short_chain, value='short_chain')
 b = a.replace(to_replace=medium_chain, value='medium_chain')
 c = b.replace(to_replace=long_chain, value='long_chain')
