@@ -6,7 +6,7 @@
 # seaborn          : 0.11.1
 # pingouin	       : 0.3.12
 
-# Import
+# 0. import
 from library_new_version import *
 
 # 1. creat simplified and purified df for plotting
@@ -37,6 +37,7 @@ Extract_int_df.rename(columns=lambda x: x[x.find('C'):len(x)], inplace=True)  # 
 Extract_str_df = main_df[xaxislabel]  # extract the real interested columns for plotting
 for x in dict_LOD:  # remove all values under LOD, and replace them with NaN
     Extract_int_df.loc[Extract_int_df[x] < dict_LOD[x], x] = NaN
+# alternative way here for selection dict_sel = ({k: v} for k, v in dict_LOD.items() if v > 0.005) 
 
 # 2. normalise the data with 'CSA'
 Extract_int_df_div = Extract_int_df.div(main_df['CSA'], axis=0)
