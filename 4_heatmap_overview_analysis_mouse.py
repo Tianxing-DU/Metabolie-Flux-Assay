@@ -55,7 +55,6 @@ grouped_df = pd.DataFrame(grouped)
 # some programing thoughts: 不需要使用这个把index变成列，下面的代码reset的时候，直接就分配到了列。
 # alternative：grouped_df['Treatment'] = grouped_df.index
 grouped_df.reset_index(inplace=True)
-# dropnan removes here C0:0 (which we are not interested)
 
 grouped_df['Treatment'] = grouped_df['Pair'].map(lambda x: x.split('&')[0])
 grouped_df['Charge'] = grouped_df['Pair'].map(lambda x: x.split('&')[1])
