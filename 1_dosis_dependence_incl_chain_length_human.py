@@ -64,6 +64,14 @@ plt.show()
 a = df.replace(to_replace=short_chain, value='short_chain')
 b = a.replace(to_replace=medium_chain, value='medium_chain')
 c = b.replace(to_replace=long_chain, value='long_chain')
+# some programming thoughts:
+# 这里是通过replace的手段，替换metabolite 名字--> short、long chain
+# 而下面的这种alternative的方式，是独立提取我想要的部分，通过函数 isin
+# short_chain_df = df[df['C-Chains'].isin(short_chain)]
+# middle_chain_df = df[df['C-Chains'].isin(middle_chain)]
+# long_chain_df = df[df['C-Chains'].isin(long_chain)]
+# 这里我尝试了很多次drop的 for loop都没有搞定，其实isin一下就搞定了
+
 grouped = c[yaxislabel].groupby([c[xaxislabel], c['C-Chains']]).sum()  # sum by using groupby
 grouped_df = pd.DataFrame(grouped)  # transfer series to df
 grouped_df.reset_index(inplace=True)  # convert the merged index to column
