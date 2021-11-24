@@ -54,21 +54,19 @@ con_list = [concentrated0_df, concentrated2_df, concentrated5_df,
             concentrated6_df, concentrated7_df]
 pca_p0_df = pd.concat(con_list, axis=0).reset_index(drop=True)
 
-# ?
-# tempo_df = pca_p0_df.groupby(['C-Chains','Treatment'], as_index=False).sum()
-# Separating out the features
-
 # 5. standardise the data
-x = pca_p0_df.loc[:, 'C2:0': 'C12:1'].values
-x = preprocessing.scale(x)
-# Separating out the target
-y = pca_p0_df.loc[:, ['Treatment']]
+x = pca_p0_df.loc[:, 'C2:0': 'C12:1'].values  # Separating out the features
+x = preprocessing.scale(x). # 使用中心标准化，即将变量都转化成z分数的形式，避免量纲问题对压缩造成影响
+# 还可以使用StandardScale，也是在preprocessing里面
 
-# 6. question component numbers of PCA
-pca = PCA(n_components=17)
+y = pca_p0_df.loc[:, ['Treatment']]  # Separating out the target
+
+# 6. question component numbers of PCA（也就是估计多少个PC比较好）
+pca = PCA(n_components=17)  # 1. 选择我想要多少个维度（如果只是测试那么就是所有的维度）
 pca.fit(x)  # fit一次原始的数据??
 principalComponents_17 = pca.fit_transform(x)  # 使用fit_transform 再来一次
 
+# +++ 累积解释变异程度 (2 PC are enough)
 plt.plot(np.cumsum(pca.explained_variance_ratio_), linewidth=3, alpha=.6)
 plt.xlabel('Components / Factors')
 plt.ylabel('Cumulative explained variance / Eigenvalue');
@@ -77,16 +75,23 @@ plt.show()
 pca_17 = pca.explained_variance_ratio_
 pca_17_reshape = pca_17.reshape(-1, 1)  # -1表示任意行数，1表示1列
 
-# 5. generate the real PCA model
+# 7.Plotting
+# +++ preparation for generate the real PCA model (2 PC)
 pca_real = PCA(n_components=2)  # 直接与变量个数相同的主成分
 pca_real.fit(x)
 principalComponents_2 = pca_real.fit_transform(x)  # fit_transform 表示将生成降维后的数据
 pca_2 = pca_real.explained_variance_ratio_  # 这一步对于我观察我的PCA分离度很有帮助
 
+# # 查看规模差别
+# print("原始数据集规模:   ", x.shape)
+# print("降维后的数据集规模:", pca_real_df.shape) #  这里可以看到数据被将为压缩了 
+# 注意这里pca_real 要dataframe化 
+
 # +++ for potential heatmap may needed
 pca_real_df = pd.DataFrame(principalComponents_2)
 pca_real_df.columns = ['pca_1', 'pca_2']
 pca_real_df.index = y
+
 plt.figure(figsize=(10, 12))
 sns.set_theme(style='whitegrid', font='Avenir')
 heatmap_ax = sns.heatmap(pca_real_df, linewidth=.5, linecolor='w', xticklabels=True,
