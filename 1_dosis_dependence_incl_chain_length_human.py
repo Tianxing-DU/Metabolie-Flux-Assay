@@ -101,3 +101,10 @@ plt.tight_layout()
 # save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211022_23_24_5h/2_2_dose_dependence_human.pdf'
 # plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
 plt.show()
+
+# !!! Here I document the rotation problem met before: 
+# plt.xticks(fontsize=8, rotation=90) (FacetGrid not working!!)
+# for tick in dose_treatment.get_xtick(): (FacetGrid not working!!)
+#     tick.set_rotation(90)
+# dose_treatment.set_yticklabels(rotation=180)
+# ax.set_xticklabels(rotation=90) ---- 只有这个是可以的successes!
