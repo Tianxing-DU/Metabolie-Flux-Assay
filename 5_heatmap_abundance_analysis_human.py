@@ -123,9 +123,8 @@ plt.tight_layout()
 plt.title('Human')
 cbar.set_ticks([100000, 10000, 1000])
 # cbar.set_ticks([min_value+.25 * zw_value, min_value+.5 * zw_value, min_value+.75 * zw_value, max_value])
-cbar.set_ticklabels(['$10^5$ * LOD', '$10^4$ * LOD', '$10^3$ * LOD'])
+cbar.set_ticklabels(['High \n$10^5$ * LOD ', 'Medium \n$10^4$ * LOD', 'Low \n$10^3$ * LOD'])
 # $ $ makes the exponential superscript available
-# save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211025_26_7h/relative_abundance_heatmap_YlGnBu_try9_human_colorbar.pdf'
-# plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
+save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211130_3h/abundance_human_v1130.pdf'
+plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
 plt.show()
-
