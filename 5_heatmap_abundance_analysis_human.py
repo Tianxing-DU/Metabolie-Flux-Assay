@@ -8,7 +8,7 @@
 
 # 0.1 set up
 from library_new_version import *
-order = ['H2O','DMSO', 'EGCG', 'Resveratrol', 'Genistein', 'Xanthohumol']
+order = ['H2O', 'DMSO', 'Xanthohumol', 'Genistein', 'Resveratrol', 'EGCG']
 
 # 1. DataFrame Processing:
 file_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/1_Skurk/Datentabelle_humane Adipocyten 20110221_2014-01-27 corri.xls'
@@ -97,28 +97,35 @@ heat_table = pd.pivot_table(heat_oleic_yes_df, values='Abundance', index=['Treat
 
 # 4. visualisation
 heat_table_recolumn = heat_table[list_custom]
-heat_table_organised = heat_table_recolumn.reindex(order)
-heat_comparison_df = heat_table_organised.apply(np.log)
+heat_comparison_df = heat_table_recolumn.reindex(order)
+# heat_comparison_df = heat_table_organised.apply(np.log)
 # log function is needed to have a better visualisation
+# !!! but log here is not preferred by journals, so I decide to change the colorbar on a log scale instead of data
 # heat_comparison_percentage_df = heat_comparison_df.div(heat_comparison_df.stack().max())
-# at the beginnign, I prefer to do in %
+# at the beginning, I prefer to do in %
 
 # +++ calculation for colour bar
-min_value = heat_comparison_df.stack().min()
-max_value = heat_comparison_df.stack().max()
-zw_value = max_value - min_value
+# min_value = heat_comparison_df.stack().min()
+# max_value = heat_comparison_df.stack().max()
+# zw_value = max_value - min_value
+# if use the log above, I can set color bar in % (or to say, divide my colorbar properly, and define 'low', 'medium','high'...
 
 # +++ plotting
 sns.set_theme( style='ticks', font='Helvetica')
 plt.figure(figsize=(12, 5))
 ax = sns.heatmap(heat_comparison_df, linewidth=.5,linecolor='w', square=True, xticklabels=True,
-                 cmap='YlGnBu',
+                 cmap='YlGnBu', norm=LogNorm(),
                  cbar_kws={'location': "right", 'shrink': 1, "fraction": .2, 'aspect':40})
+# function LogNorm here is essential, better than using the original colorbar arguments
+# cbar_kws={'ticks':MaxNLocator(2), 'format':'%.e'}
 cbar = ax.collections[0].colorbar
 plt.tight_layout()
 plt.title('Human')
-cbar.set_ticks([min_value+.25 * zw_value, min_value+.5 * zw_value, min_value+.75 * zw_value, max_value])
-cbar.set_ticklabels(['Very low <0.25', 'Low 0.25-0.5', 'Medium 0.5-0.75', 'High >0.75'])
+cbar.set_ticks([100000, 10000, 1000])
+# cbar.set_ticks([min_value+.25 * zw_value, min_value+.5 * zw_value, min_value+.75 * zw_value, max_value])
+cbar.set_ticklabels(['$10^5$ * LOD', '$10^4$ * LOD', '$10^3$ * LOD'])
+# $ $ makes the exponential superscript available
 # save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211025_26_7h/relative_abundance_heatmap_YlGnBu_try9_human_colorbar.pdf'
 # plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
 plt.show()
+
