@@ -8,7 +8,7 @@
 
 # 0. set up
 from library_new_version import *
-order = ['H2O','DMSO', 'EGCG', 'Resveratrol', 'Genistein', 'Xanthohumol']
+order = ['H2O', 'DMSO', 'Xanthohumol', 'Genistein', 'Resveratrol', 'EGCG']
 
 # 1. data input:
 file_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/1_Skurk/Datentabelle_humane Adipocyten 20110221_2014-01-27 corri.xls'
