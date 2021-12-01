@@ -9,7 +9,7 @@
 # 0. set up
 from library_new_version import *
 order = ['H2O', 'DMSO', 'Resveratrol', 'Genistein', 'Xanthohumol', 'EGCG', 'Bezafibrat', 'Etomoxir']
-order_mainbody = ['H2O', 'DMSO', 'EGCG', 'Resveratrol', 'Genistein', 'Xanthohumol']
+order_mainbody = ['H2O', 'DMSO', 'Xanthohumol', 'Genistein', 'Resveratrol', 'EGCG']
 order_supplyment = ['H2O', 'DMSO', 'Bezafibrat', 'Etomoxir']
 
 # 1. data input:
