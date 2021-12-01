@@ -18,7 +18,7 @@ human_df = pd.read_excel(file_path, sheet_name=sheet_name)  # open the correct s
 human_df.columns = human_df.iloc[0]  # rename the columns
 human_df = human_df.drop(index=0).reset_index(drop=True)  # delete the duplicate column names
 yaxislabel = 'Acylcarnitine products \n (normalized data on a log scale)'
-xaxislabel = 'Incubation Time (s)'
+xaxislabel = 'Incubation Time (min)'
 
 # +++ split data
 human_df['Date'] = human_df['Sample ID'].map(lambda x: x.split('_')[0])
