@@ -8,9 +8,10 @@
 
 # 0.1 set up
 from library_new_version import *
-order = ['H2O','DMSO', 'Resveratrol', 'Genistein', 'Xanthohumol', 'EGCG','Bezafibrat', 'Etomoxir']
-order_mainbody = ['H2O','DMSO', 'EGCG', 'Resveratrol', 'Genistein', 'Xanthohumol']
-order_supplyment =['H2O','DMSO', 'Bezafibrat', 'Etomoxir']
+
+order = ['H2O', 'DMSO', 'Resveratrol', 'Genistein', 'Xanthohumol', 'EGCG', 'Bezafibrat', 'Etomoxir']
+order_mainbody = ['H2O', 'DMSO', 'Xanthohumol', 'Genistein', 'Resveratrol', 'EGCG']
+order_supplyment = ['H2O', 'DMSO', 'Bezafibrat', 'Etomoxir']
 
 # 1. DataFrame Processing:
 file_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/1_Skurk/Behandlung_3T3-L1 2011-12-20_2014-01-27_corr.xls'
@@ -87,50 +88,59 @@ heat_table = pd.pivot_table(heat_oleic_yes_df, values='Abundance', index=['Treat
 
 # 4. visualisation
 heat_table_recolumn = heat_table[list_custom]
-heat_table_organised = heat_table_recolumn.reindex(order)
+# heat_table_organised = heat_table_recolumn.reindex(order)
 # .drop(['Bezafibrat', 'Etomoxir'])
-heat_comparison_df = heat_table_organised.apply(np.log)
+heat_comparison_df = heat_table_recolumn.reindex(order)
+# heat_comparison_df = heat_table_organised.apply(np.log)
 heatmap_mainbody_df = heat_comparison_df.loc[order_mainbody]
 heatmap_supplement_df = heat_comparison_df.loc[order_supplyment]
 
-# +++ mainbody calculation for colour bar
-min_value_m = heatmap_mainbody_df.stack().min()
-max_value_m = heatmap_mainbody_df.stack().max()
-zw_value_m = max_value_m - min_value_m
-
-# +++ supplement calculation for colour bar
-min_value_s = heatmap_supplement_df.stack().min()
-max_value_s = heatmap_supplement_df.stack().max()
-zw_value_s = max_value_s - min_value_s
+# # +++ mainbody calculation for colour bar
+# min_value_m = heatmap_mainbody_df.stack().min()
+# max_value_m = heatmap_mainbody_df.stack().max()
+# zw_value_m = max_value_m - min_value_m
+#
+# # +++ supplement calculation for colour bar
+# min_value_s = heatmap_supplement_df.stack().min()
+# max_value_s = heatmap_supplement_df.stack().max()
+# zw_value_s = max_value_s - min_value_s
 
 
 # +++ plotting mainbody
 sns.set_theme(style='ticks', font='Helvetica')
 plt.figure(figsize=(12, 5))
 ax = sns.heatmap(heatmap_mainbody_df, linewidth=.5, linecolor='w', square=True, xticklabels=True,
-                 cmap='YlGnBu',
-                 cbar_kws={'location': "right", 'shrink': .5, "fraction": .2, 'aspect':20})
+                 cmap='YlGnBu', norm=LogNorm(vmin=100, vmax=100000),
+                 # !!! to set a shared log colorbar, must set vmin and vmax inside LogNorm, NOT ouside!!!
+                 # with this code here and same in the code of mice analysis, we can make two heatmap share a same colorbar
+                 cbar_kws={'location': "right", 'shrink': 1, "fraction": .2, 'aspect': 40})
 cbar = ax.collections[0].colorbar
+
 plt.tight_layout()
 plt.title('Mouse')
-cbar.set_ticks([min_value_m+.25 * zw_value_m, min_value_m+.5 * zw_value_m, min_value_m+.75 * zw_value_m, max_value_m])
-cbar.set_ticklabels(['Very low <0.25', 'Low 0.25-0.5', 'Medium 0.5-0.75', 'High >0.75'])
-# save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211025_26_7h/relative_abundance_heatmap_YlGnBu_try9_mouse_mainbody.pdf'
-# plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
+cbar.set_ticks([100000, 10000, 1000, 100])
+# cbar.set_ticks([min_value+.25 * zw_value, min_value+.5 * zw_value, min_value+.75 * zw_value, max_value])
+cbar.set_ticklabels(
+    ['High \n$10^5$ * LOD ', 'Medium \n$10^4$ * LOD', 'Low \n$10^3$ * LOD', 'Very low \n$10^2$ * LOD', ])
+# $ $ makes the exponential superscript available
+save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211130_3h/abundance_mouse_v1130_mainbody.pdf'
+plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
 plt.show()
 
 # +++ plotting supplement
 plt.figure(figsize=(12, 5))
-ax = sns.heatmap(heatmap_supplement_df, linewidth=.5,linecolor='w', square=True, xticklabels=True,
-                 cmap='YlGnBu',
-                 cbar_kws={'location': "right", 'shrink': .5, "fraction": .2, 'aspect':20})
+ax = sns.heatmap(heatmap_supplement_df, linewidth=.5, linecolor='w', square=True, xticklabels=True,
+                 cmap='YlGnBu', norm=LogNorm(vmin=100, vmax=100000),
+                 cbar_kws={'location': "right", 'shrink': 1, "fraction": .2, 'aspect': 40})
 cbar = ax.collections[0].colorbar
 plt.tight_layout()
 plt.title('Mouse')
-cbar.set_ticks([min_value_s+.25 * zw_value_s, min_value_s+.5 * zw_value_s, min_value_s+.75 * zw_value_s, 1])
-cbar.set_ticklabels(['very low <0.25', 'low 0.25-0.5', 'medium 0.5-0.75', 'high >0.75'])
-# save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211025_26_7h/relative_abundance_heatmap_YlGnBu_try9_mouse_supplement.pdf'
-# plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
+cbar.set_ticks([100000, 10000, 1000, 100])
+# cbar.set_ticks([min_value+.25 * zw_value, min_value+.5 * zw_value, min_value+.75 * zw_value, max_value])
+cbar.set_ticklabels(['High \n$10^5$ * LOD ', 'Medium \n$10^4$ * LOD', 'Low \n$10^3$ * LOD', 'Very low \n$10^2$ * LOD'])
+# $ $ makes the exponential superscript available
+save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211130_3h/abundance_mouse_v1130_supplyment.pdf'
+plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
 plt.show()
 # cmap='nipy_spectral_r',center=.33,alpha=.65,
 # cmap='hot',center=.7,
