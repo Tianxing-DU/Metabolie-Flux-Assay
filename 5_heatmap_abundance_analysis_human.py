@@ -8,6 +8,7 @@
 
 # 0.1 set up
 from library_new_version import *
+
 order = ['H2O', 'DMSO', 'Xanthohumol', 'Genistein', 'Resveratrol', 'EGCG']
 
 # 1. DataFrame Processing:
@@ -111,19 +112,21 @@ heat_comparison_df = heat_table_recolumn.reindex(order)
 # if use the log above, I can set color bar in % (or to say, divide my colorbar properly, and define 'low', 'medium','high'...
 
 # +++ plotting
-sns.set_theme( style='ticks', font='Helvetica')
+sns.set_theme(style='ticks', font='Helvetica')
 plt.figure(figsize=(12, 5))
-ax = sns.heatmap(heat_comparison_df, linewidth=.5,linecolor='w', square=True, xticklabels=True,
-                 cmap='YlGnBu', norm=LogNorm(),
-                 cbar_kws={'location': "right", 'shrink': 1, "fraction": .2, 'aspect':40})
+ax = sns.heatmap(heat_comparison_df, linewidth=.5, linecolor='w', square=True, xticklabels=True,
+                 cmap='YlGnBu', norm=LogNorm(vmin=100, vmax=100000),
+                 # !!! to set a shared log colorbar, must set vmin and vmax inside LogNorm, NOT ouside!!!
+                 # with this code here and same in the code of mice analysis, we can make two heatmap share a same colorbar
+                 cbar_kws={'location': "right", 'shrink': 1, "fraction": .2, 'aspect': 40})
 # function LogNorm here is essential, better than using the original colorbar arguments
 # cbar_kws={'ticks':MaxNLocator(2), 'format':'%.e'}
 cbar = ax.collections[0].colorbar
 plt.tight_layout()
 plt.title('Human')
-cbar.set_ticks([100000, 10000, 1000])
+cbar.set_ticks([100000, 10000, 1000, 100])
 # cbar.set_ticks([min_value+.25 * zw_value, min_value+.5 * zw_value, min_value+.75 * zw_value, max_value])
-cbar.set_ticklabels(['High \n$10^5$ * LOD ', 'Medium \n$10^4$ * LOD', 'Low \n$10^3$ * LOD'])
+cbar.set_ticklabels(['High \n$10^5$ * LOD ', 'Medium \n$10^4$ * LOD', 'Low \n$10^3$ * LOD', 'Very low \n$10^2$ * LOD', ])
 # $ $ makes the exponential superscript available
 save_path = '/Users/tianxingdu/Documents/4_Software Data/6_PycharmProjects/Bioinformatics/0_1_Work/1_Metabolitenassay/0_Output/20211130_3h/abundance_human_v1130.pdf'
 plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
